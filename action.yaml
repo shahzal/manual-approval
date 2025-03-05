@@ -46,4 +46,4 @@ inputs:
     default: 'true'
 runs:
   using: docker
-  image: docker://ghcr.io/trstringer/manual-approval:1.9.1
+  image: docker://us-aks-docker-local.artifactory.platform.manulife.io/shahzal/manual-approval:1.0
