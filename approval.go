@@ -170,11 +170,15 @@ func isApproved(commentBody string) (bool, error) {
 			return false, err
 		}
 
-		matched := re.MatchString(commentBody)
+		if strings.Contains(commentBody, strings.ToLower(approvedWord)) {
+            return true, nil
+        }
 
-		if matched {
-			return true, nil
-		}
+		// matched := re.MatchString(commentBody)
+
+		// if matched {
+		// 	return true, nil
+		// }
 	}
 
 	return false, nil
@@ -187,10 +191,14 @@ func isDenied(commentBody string) (bool, error) {
 			fmt.Printf("Error parsing. %v", err)
 			return false, err
 		}
-		matched := re.MatchString(commentBody)
-		if matched {
+
+		if strings.Contains(commentBody, strings.ToLower(deniedWord)) {
 			return true, nil
 		}
+		// matched := re.MatchString(commentBody)
+		// if matched {
+		// 	return true, nil
+		// }
 	}
 
 	return false, nil
