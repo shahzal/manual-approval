@@ -164,7 +164,7 @@ func approversIndex(approvers []string, name string) int {
 
 func isApproved(commentBody string) (bool, error) {
 	for _, approvedWord := range approvedWords {
-		re, err := regexp.Compile(fmt.Sprintf("(?i)^%s[.!]*\n*\\s*$", approvedWord))
+		_, err := regexp.Compile(fmt.Sprintf("(?i)^%s[.!]*\n*\\s*$", approvedWord))
 		if err != nil {
 			fmt.Printf("Error parsing. %v", err)
 			return false, err
@@ -186,7 +186,7 @@ func isApproved(commentBody string) (bool, error) {
 
 func isDenied(commentBody string) (bool, error) {
 	for _, deniedWord := range deniedWords {
-		re, err := regexp.Compile(fmt.Sprintf("(?i)^%s[.!]*\n*\\s*$", deniedWord))
+		_, err := regexp.Compile(fmt.Sprintf("(?i)^%s[.!]*\n*\\s*$", deniedWord))
 		if err != nil {
 			fmt.Printf("Error parsing. %v", err)
 			return false, err
