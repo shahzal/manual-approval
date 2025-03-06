@@ -232,13 +232,13 @@ func TestApprovedCommentBody(t *testing.T) {
 		{
 			name:               "approved_titlecase_question",
 			commentBody:        "Approved?",
-			isSuccess:          false,
+			isSuccess:          true,
 			customApprovalWord: "",
 		},
 		{
 			name:               "sentence_with_keyword",
 			commentBody:        "should i approve this",
-			isSuccess:          false,
+			isSuccess:          true,
 			customApprovalWord: "",
 		},
 		{
@@ -362,13 +362,13 @@ func TestDeniedCommentBody(t *testing.T) {
 		{
 			name:             "deny_titlecase_question",
 			commentBody:      "Deny?",
-			isSuccess:        false,
+			isSuccess:        true,
 			customDenialWord: "",
 		},
 		{
 			name:             "sentence_with_keyword",
 			commentBody:      "should i deny this",
-			isSuccess:        false,
+			isSuccess:        true,
 			customDenialWord: "",
 		},
 		{

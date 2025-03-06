@@ -145,6 +145,11 @@ func approvalFromComments(comments []*github.IssueComment, approvers []string, m
 		if err != nil {
 			return approvalStatusPending, err
 		}
+
+		if isDenialComment && isApprovalComment {
+			return approvalStatusPending, nil
+		}
+
 		if isDenialComment {
 			return approvalStatusDenied, nil
 		}
