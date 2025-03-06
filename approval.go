@@ -163,12 +163,13 @@ func approversIndex(approvers []string, name string) int {
 }
 
 func isApproved(commentBody string) (bool, error) {
+	commentBody = strings.ToLower(commentBody)
 	for _, approvedWord := range approvedWords {
-		_, err := regexp.Compile(fmt.Sprintf("(?i)^%s[.!]*\n*\\s*$", approvedWord))
-		if err != nil {
-			fmt.Printf("Error parsing. %v", err)
-			return false, err
-		}
+		//_, err := regexp.Compile(fmt.Sprintf("(?i)^%s[.!]*\n*\\s*$", approvedWord))
+		// if err != nil {
+		// 	fmt.Printf("Error parsing. %v", err)
+		// 	return false, err
+		// }
 
 		if strings.Contains(commentBody, strings.ToLower(approvedWord)) {
             return true, nil
@@ -185,12 +186,13 @@ func isApproved(commentBody string) (bool, error) {
 }
 
 func isDenied(commentBody string) (bool, error) {
+	commentBody = strings.ToLower(commentBody)
 	for _, deniedWord := range deniedWords {
-		_, err := regexp.Compile(fmt.Sprintf("(?i)^%s[.!]*\n*\\s*$", deniedWord))
-		if err != nil {
-			fmt.Printf("Error parsing. %v", err)
-			return false, err
-		}
+		// _, err := regexp.Compile(fmt.Sprintf("(?i)^%s[.!]*\n*\\s*$", deniedWord))
+		// if err != nil {
+		// 	fmt.Printf("Error parsing. %v", err)
+		// 	return false, err
+		// }
 
 		if strings.Contains(commentBody, strings.ToLower(deniedWord)) {
 			return true, nil
