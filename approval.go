@@ -113,51 +113,49 @@ func (a *approvalEnvironment) createApprovalIssue(ctx context.Context) error {
 }
 
 func approvalFromComments(comments []*github.IssueComment, approvers []string, minimumApprovals int) (approvalStatus, error) {
-	remainingApprovers := make([]string, len(approvers))
-	copy(remainingApprovers, approvers)
+    remainingApprovers := make([]string, len(approvers))
+    copy(remainingApprovers, approvers)
 
-	if minimumApprovals == 0 {
-		minimumApprovals = len(approvers)
-	}
+    if minimumApprovals == 0 {
+        minimumApprovals = len(approvers)
+    }
 
-	for _, comment := range comments {
-		commentUser := comment.User.GetLogin()
-		approverIdx := approversIndex(remainingApprovers, commentUser)
-		if approverIdx < 0 {
-			continue
-		}
+    for _, comment := range comments {
+        commentUser := comment.User.GetLogin()
+        approverIdx := approversIndex(remainingApprovers, commentUser)
+        if approverIdx < 0 {
+            continue
+        }
 
-		commentBody := comment.GetBody()
-		isApprovalComment, err := isApproved(commentBody)
-		if err != nil {
-			return approvalStatusPending, err
-		}
+        commentBody := comment.GetBody()
+        isApprovalComment, err := isApproved(commentBody)
+        if err != nil {
+            return approvalStatusPending, err
+        }
+        isDenialComment, err := isDenied(commentBody)
+        if err != nil {
+            return approvalStatusPending, err
+        }
 
-		isDenialComment, err := isDenied(commentBody)
-		if err != nil {
-			return approvalStatusPending, err
-		}
+        if isDenialComment && isApprovalComment {
+            return approvalStatusPending, nil
+        }
 
-		if isDenialComment && isApprovalComment {
-			return approvalStatusPending, nil
-		}
+        if isApprovalComment {
+            remainingApprovers[approverIdx] = remainingApprovers[len(remainingApprovers)-1]
+            remainingApprovers = remainingApprovers[:len(remainingApprovers)-1]
+            if len(approvers)-len(remainingApprovers) >= minimumApprovals {
+                return approvalStatusApproved, nil
+            }
+            continue
+        }
 
+        if isDenialComment {
+            return approvalStatusDenied, nil
+        }
+    }
 
-		if isApprovalComment {
-			if len(remainingApprovers) == len(approvers)-minimumApprovals+1 {
-				return approvalStatusApproved, nil
-			}
-			remainingApprovers[approverIdx] = remainingApprovers[len(remainingApprovers)-1]
-			remainingApprovers = remainingApprovers[:len(remainingApprovers)-1]
-			continue
-		}
-
-		if isDenialComment {
-			return approvalStatusDenied, nil
-		}
-	}
-
-	return approvalStatusPending, nil
+    return approvalStatusPending, nil
 }
 
 func approversIndex(approvers []string, name string) int {
