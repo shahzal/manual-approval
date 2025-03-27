@@ -132,6 +132,15 @@ func approvalFromComments(comments []*github.IssueComment, approvers []string, m
         if err != nil {
             return approvalStatusPending, err
         }
+		if isApprovalComment {
+            remainingApprovers[approverIdx] = remainingApprovers[len(remainingApprovers)-1]
+            remainingApprovers = remainingApprovers[:len(remainingApprovers)-1]
+            if len(approvers)-len(remainingApprovers) >= minimumApprovals {
+                return approvalStatusApproved, nil
+            }
+            continue
+        }
+
         isDenialComment, err := isDenied(commentBody)
         if err != nil {
             return approvalStatusPending, err
@@ -141,14 +150,6 @@ func approvalFromComments(comments []*github.IssueComment, approvers []string, m
             return approvalStatusPending, nil
         }
 
-        if isApprovalComment {
-            remainingApprovers[approverIdx] = remainingApprovers[len(remainingApprovers)-1]
-            remainingApprovers = remainingApprovers[:len(remainingApprovers)-1]
-            if len(approvers)-len(remainingApprovers) >= minimumApprovals {
-                return approvalStatusApproved, nil
-            }
-            continue
-        }
 
         if isDenialComment {
             return approvalStatusDenied, nil

@@ -7,173 +7,172 @@ import (
 )
 
 func TestApprovalFromComments(t *testing.T) {
-	login1 := "login1"
-	login2 := "login2"
-	login3 := "login3"
-	bodyApproved := "Approved"
-	bodyDenied := "Denied"
-	bodyPending := "not approval or denial"
+    login1 := "login1"
+    login2 := "login2"
+    login3 := "login3"
+    bodyApproved := "Approved"
+    bodyDenied := "Denied"
+    bodyPending := "not approval or denial"
 
-	testCases := []struct {
-		name             string
-		comments         []*github.IssueComment
-		approvers        []string
-		minimumApprovals int
-		expectedStatus   approvalStatus
-	}{
-		{
-			name: "single_approver_single_comment_approved",
-			comments: []*github.IssueComment{
-				{
-					User: &github.User{Login: &login1},
-					Body: &bodyApproved,
-				},
-			},
-			approvers:      []string{login1},
-			expectedStatus: approvalStatusApproved,
-		},
-		{
-			name: "single_approver_single_comment_denied",
-			comments: []*github.IssueComment{
-				{
-					User: &github.User{Login: &login1},
-					Body: &bodyDenied,
-				},
-			},
-			approvers:      []string{login1},
-			expectedStatus: approvalStatusDenied,
-		},
-		{
-			name: "single_approver_single_comment_pending",
-			comments: []*github.IssueComment{
-				{
-					User: &github.User{Login: &login1},
-					Body: &bodyPending,
-				},
-			},
-			approvers:      []string{login1},
-			expectedStatus: approvalStatusPending,
-		},
-		{
-			name: "single_approver_multi_comment_approved",
-			comments: []*github.IssueComment{
-				{
-					User: &github.User{Login: &login1},
-					Body: &bodyPending,
-				},
-				{
-					User: &github.User{Login: &login1},
-					Body: &bodyApproved,
-				},
-			},
-			approvers:      []string{login1},
-			expectedStatus: approvalStatusApproved,
-		},
-		{
-			name: "multi_approver_approved",
-			comments: []*github.IssueComment{
-				{
-					User: &github.User{Login: &login1},
-					Body: &bodyApproved,
-				},
-				{
-					User: &github.User{Login: &login2},
-					Body: &bodyApproved,
-				},
-			},
-			approvers:      []string{login1, login2},
-			expectedStatus: approvalStatusApproved,
-		},
-		{
-			name: "multi_approver_mixed",
-			comments: []*github.IssueComment{
-				{
-					User: &github.User{Login: &login1},
-					Body: &bodyPending,
-				},
-				{
-					User: &github.User{Login: &login2},
-					Body: &bodyApproved,
-				},
-			},
-			approvers:      []string{login1, login2},
-			expectedStatus: approvalStatusPending,
-		},
-		{
-			name: "multi_approver_denied",
-			comments: []*github.IssueComment{
-				{
-					User: &github.User{Login: &login1},
-					Body: &bodyDenied,
-				},
-				{
-					User: &github.User{Login: &login2},
-					Body: &bodyApproved,
-				},
-			},
-			approvers:      []string{login1, login2},
-			expectedStatus: approvalStatusDenied,
-		},
-		{
-			name: "multi_approver_minimum_one_approval",
-			comments: []*github.IssueComment{
-				{
-					User: &github.User{Login: &login1},
-					Body: &bodyPending,
-				},
-				{
-					User: &github.User{Login: &login2},
-					Body: &bodyApproved,
-				},
-			},
-			approvers:        []string{login1, login2},
-			expectedStatus:   approvalStatusApproved,
-			minimumApprovals: 1,
-		},
-		{
-			name: "multi_approver_minimum_two_approvals",
-			comments: []*github.IssueComment{
-				{
-					User: &github.User{Login: &login1},
-					Body: &bodyApproved,
-				},
-				{
-					User: &github.User{Login: &login2},
-					Body: &bodyApproved,
-				},
-			},
-			approvers:        []string{login1, login2, login3},
-			expectedStatus:   approvalStatusApproved,
-			minimumApprovals: 2,
-		},
-		{
-			name: "multi_approver_approvals_less_than_minimum",
-			comments: []*github.IssueComment{
-				{
-					User: &github.User{Login: &login1},
-					Body: &bodyApproved,
-				},
-			},
-			approvers:        []string{login1, login2, login3},
-			expectedStatus:   approvalStatusPending,
-			minimumApprovals: 2,
-		},
-	}
+    testCases := []struct {
+        name             string
+        comments         []*github.IssueComment
+        approvers        []string
+        minimumApprovals int
+        expectedStatus   approvalStatus
+    }{
+        {
+            name: "single_approver_single_comment_approved",
+            comments: []*github.IssueComment{
+                {
+                    User: &github.User{Login: &login1},
+                    Body: &bodyApproved,
+                },
+            },
+            approvers:      []string{login1},
+            expectedStatus: approvalStatusApproved,
+        },
+        {
+            name: "single_approver_single_comment_denied",
+            comments: []*github.IssueComment{
+                {
+                    User: &github.User{Login: &login1},
+                    Body: &bodyDenied,
+                },
+            },
+            approvers:      []string{login1},
+            expectedStatus: approvalStatusDenied,
+        },
+        {
+            name: "single_approver_single_comment_pending",
+            comments: []*github.IssueComment{
+                {
+                    User: &github.User{Login: &login1},
+                    Body: &bodyPending,
+                },
+            },
+            approvers:      []string{login1},
+            expectedStatus: approvalStatusPending,
+        },
+        {
+            name: "single_approver_multi_comment_approved",
+            comments: []*github.IssueComment{
+                {
+                    User: &github.User{Login: &login1},
+                    Body: &bodyPending,
+                },
+                {
+                    User: &github.User{Login: &login1},
+                    Body: &bodyApproved,
+                },
+            },
+            approvers:      []string{login1},
+            expectedStatus: approvalStatusApproved,
+        },
+        {
+            name: "multi_approver_approved",
+            comments: []*github.IssueComment{
+                {
+                    User: &github.User{Login: &login1},
+                    Body: &bodyApproved,
+                },
+                {
+                    User: &github.User{Login: &login2},
+                    Body: &bodyApproved,
+                },
+            },
+            approvers:      []string{login1, login2},
+            expectedStatus: approvalStatusApproved,
+        },
+        {
+            name: "multi_approver_mixed",
+            comments: []*github.IssueComment{
+                {
+                    User: &github.User{Login: &login1},
+                    Body: &bodyPending,
+                },
+                {
+                    User: &github.User{Login: &login2},
+                    Body: &bodyApproved,
+                },
+            },
+            approvers:      []string{login1, login2},
+            expectedStatus: approvalStatusPending,
+        },
+        {
+            name: "multi_approver_denied",
+            comments: []*github.IssueComment{
+                {
+                    User: &github.User{Login: &login1},
+                    Body: &bodyDenied,
+                },
+                {
+                    User: &github.User{Login: &login2},
+                    Body: &bodyApproved,
+                },
+            },
+            approvers:      []string{login1, login2},
+            expectedStatus: approvalStatusDenied,
+        },
+        {
+            name: "multi_approver_minimum_one_approval",
+            comments: []*github.IssueComment{
+                {
+                    User: &github.User{Login: &login1},
+                    Body: &bodyPending,
+                },
+                {
+                    User: &github.User{Login: &login2},
+                    Body: &bodyApproved,
+                },
+            },
+            approvers:        []string{login1, login2},
+            expectedStatus:   approvalStatusApproved,
+            minimumApprovals: 1,
+        },
+        {
+            name: "multi_approver_minimum_two_approvals",
+            comments: []*github.IssueComment{
+                {
+                    User: &github.User{Login: &login1},
+                    Body: &bodyApproved,
+                },
+                {
+                    User: &github.User{Login: &login2},
+                    Body: &bodyApproved,
+                },
+            },
+            approvers:        []string{login1, login2, login3},
+            expectedStatus:   approvalStatusApproved,
+            minimumApprovals: 2,
+        },
+        {
+            name: "multi_approver_approvals_less_than_minimum",
+            comments: []*github.IssueComment{
+                {
+                    User: &github.User{Login: &login1},
+                    Body: &bodyApproved,
+                },
+            },
+            approvers:        []string{login1, login2, login3},
+            expectedStatus:   approvalStatusPending,
+            minimumApprovals: 2,
+        },
+    }
 
-	for _, testCase := range testCases {
-		t.Run(testCase.name, func(t *testing.T) {
-			actual, err := approvalFromComments(testCase.comments, testCase.approvers, testCase.minimumApprovals)
-			if err != nil {
-				t.Fatalf("error getting approval from comments: %v", err)
-			}
+    for _, testCase := range testCases {
+        t.Run(testCase.name, func(t *testing.T) {
+            actual, err := approvalFromComments(testCase.comments, testCase.approvers, testCase.minimumApprovals)
+            if err != nil {
+                t.Fatalf("error getting approval from comments: %v", err)
+            }
 
-			if actual != testCase.expectedStatus {
-				t.Fatalf("actual %s, expected %s", actual, testCase.expectedStatus)
-			}
-		})
-	}
+            if actual != testCase.expectedStatus {
+                t.Fatalf("actual %s, expected %s", actual, testCase.expectedStatus)
+            }
+        })
+    }
 }
-
 func TestApprovedCommentBody(t *testing.T) {
 	testCases := []struct {
 		name               string
