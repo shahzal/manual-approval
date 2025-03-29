@@ -132,7 +132,12 @@ func approvalFromComments(comments []*github.IssueComment, approvers []string, m
         if err != nil {
             return approvalStatusPending, err
         }
-		if isApprovalComment {
+		isDenialComment, err := isDenied(commentBody)
+        if err != nil {
+            return approvalStatusPending, err
+        }
+
+		if isApprovalComment && !isDenialComment {
             remainingApprovers[approverIdx] = remainingApprovers[len(remainingApprovers)-1]
             remainingApprovers = remainingApprovers[:len(remainingApprovers)-1]
             if len(approvers)-len(remainingApprovers) >= minimumApprovals {
@@ -141,14 +146,11 @@ func approvalFromComments(comments []*github.IssueComment, approvers []string, m
             continue
         }
 
-        isDenialComment, err := isDenied(commentBody)
-        if err != nil {
-            return approvalStatusPending, err
-        }
+      
 
-        if isDenialComment && isApprovalComment {
-            return approvalStatusPending, nil
-        }
+        // if isDenialComment && isApprovalComment {
+        //     return approvalStatusPending, nil
+        // }
 
 
         if isDenialComment {
@@ -181,35 +183,24 @@ func isApproved(commentBody string) (bool, error) {
             return true, nil
         }
 
-		// matched := re.MatchString(commentBody)
-
-		// if matched {
-		// 	return true, nil
-		// }
 	}
 
 	return false, nil
 }
 
 func isDenied(commentBody string) (bool, error) {
-	commentBody = strings.ToLower(commentBody)
-	for _, deniedWord := range deniedWords {
-		_, err := regexp.Compile(fmt.Sprintf("(?i)^%s[.!]*\n*\\s*$", deniedWord))
-		if err != nil {
-			fmt.Printf("Error parsing. %v", err)
-			return false, err
-		}
+    commentBody = strings.ToLower(strings.TrimSpace(commentBody))
+    words := strings.Fields(commentBody) // Tokenize the comment body into words
 
-		if strings.Contains(commentBody, strings.ToLower(deniedWord)) {
-			return true, nil
-		}
-		// matched := re.MatchString(commentBody)
-		// if matched {
-		// 	return true, nil
-		// }
-	}
+    for _, deniedWord := range deniedWords {
+        for _, word := range words {
+            if word == strings.ToLower(deniedWord) {
+                return true, nil
+            }
+        }
+    }
 
-	return false, nil
+    return false, nil
 }
 
 func formatAcceptedWords(words []string) string {

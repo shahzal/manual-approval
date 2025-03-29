@@ -43,6 +43,7 @@ func TestApprovalFromComments(t *testing.T) {
             approvers:      []string{login1},
             expectedStatus: approvalStatusDenied,
         },
+		// Will respond with mixed approval and denial cases.
         {
             name: "single_approver_single_comment_pending",
             comments: []*github.IssueComment{
@@ -55,19 +56,19 @@ func TestApprovalFromComments(t *testing.T) {
             expectedStatus: approvalStatusPending,
         },
         {
-            name: "single_approver_multi_comment_approved",
-            comments: []*github.IssueComment{
-                {
-                    User: &github.User{Login: &login1},
-                    Body: &bodyPending,
-                },
-                {
-                    User: &github.User{Login: &login1},
-                    Body: &bodyApproved,
-                },
-            },
-            approvers:      []string{login1},
-            expectedStatus: approvalStatusApproved,
+name: "single_approver_multi_comment_approved",
+        comments: []*github.IssueComment{
+        {
+User: &github.User{Login: &login1},
+        Body: &bodyPending,
+        },
+        {
+User: &github.User{Login: &login1},
+        Body: &bodyApproved,
+        },
+        },
+        approvers:      []string{login1},
+        expectedStatus: approvalStatusApproved,
         },
         {
             name: "multi_approver_approved",
