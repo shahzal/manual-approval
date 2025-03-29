@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"unicode"
 
 	"github.com/google/go-github/v43/github"
 )
@@ -194,7 +195,12 @@ func isDenied(commentBody string) (bool, error) {
 
     for _, deniedWord := range deniedWords {
         for _, word := range words {
-            if word == strings.ToLower(deniedWord) {
+             // Remove punctuation from the word
+			 cleanWord := strings.TrimFunc(word, func(r rune) bool {
+                return !unicode.IsLetter(r) && !unicode.IsNumber(r) && r != '_' && r != ':' && r != '#'  
+            })
+
+            if cleanWord == strings.ToLower(deniedWord) {
                 return true, nil
             }
         }
