@@ -15,6 +15,8 @@ push:
 		echo "VERSION is required"; \
 		exit 1; \
 	fi
+	doker login ghcr.io -u $$GITHUB_ACTOR -p $$GITHUB_TOKEN
+	docker tag $(IMAGE_REPO):$$VERSION $(IMAGE_REPO):latest
 	docker push $(IMAGE_REPO):$$VERSION
 
 .PHONY: test
