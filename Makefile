@@ -1,4 +1,4 @@
-IMAGE_REPO=us-aks-docker-local.artifactory.platform.manulife.io/shahzal/manual-approval
+IMAGE_REPO=ghcr.io/shahzal/manual-approval
 TARGET_PLATFORM=linux/amd64
 
 .PHONY: build
