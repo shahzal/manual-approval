@@ -46,4 +46,4 @@ inputs:
     default: 'true'
 runs:
   using: docker
-  image: docker://ghr.io/shahzal/manual-approval:latest
+  image: docker://ghcr.io/shahzal/manual-approval:latest
