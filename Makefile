@@ -18,6 +18,7 @@ push:
 	docker login ghcr.io -u $$GITHUB_ACTOR -p $$GITHUB_TOKEN
 	docker tag $(IMAGE_REPO):$$VERSION $(IMAGE_REPO):latest
 	docker push $(IMAGE_REPO):$$VERSION
+	docker push $(IMAGE_REPO):latest
 
 .PHONY: test
 test:
